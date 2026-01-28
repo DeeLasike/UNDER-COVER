@@ -5,9 +5,10 @@ const addPlayerBtn = document.getElementById('add-player');
 const playerList = document.getElementById('player-list');
 const startGameBtn = document.getElementById('start-game');
 const setupSection = document.getElementById('setup-section');
-const wordSection = document.getElementById('word-section');
-const wordInstructions = document.getElementById('word-instructions');
-const nextPlayerBtn = document.getElementById('next-player');
+// Word section removed
+const cardSection = document.getElementById('card-section');
+const cardsContainer = document.getElementById('cards-container');
+const cardPlayerTitle = document.getElementById('card-player-title');
 const voteSection = document.getElementById('vote-section');
 const voteList = document.getElementById('vote-list');
 const revealBtn = document.getElementById('reveal-btn');
@@ -32,6 +33,7 @@ let words = [
 	['book', 'magazine']
 ];
 let currentWordPlayer = 0;
+let cardWords = [];
 let votes = [];
 
 function updatePlayerList() {
@@ -71,30 +73,66 @@ startGameBtn.onclick = function() {
 		undercoverWord = wordPair[0];
 	}
 	undercoverIndex = Math.floor(Math.random() * players.length);
+	// Prepare card words for each player
+	cardWords = players.map((_, i) => (i === undercoverIndex ? undercoverWord : civilianWord));
 	setupSection.style.display = 'none';
-	wordSection.style.display = '';
-	currentWordPlayer = 0;
-	showWordForPlayer();
+	cardsContainer.innerHTML = '';
+	cardPlayerTitle.textContent = `Everyone, hold your card to reveal!`;
+	let flippedCount = 0;
+	for (let i = 0; i < players.length; i++) {
+		const card = document.createElement('div');
+		card.className = 'gold-card card-flip';
+		card.innerHTML = `<div class="card-inner"><div class="card-front">Card</div><div class="card-back"><div class="card-word">${cardWords[i]}</div><div class="card-player-name">${players[i]}</div></div></div>`;
+		card.dataset.playerIndex = i;
+		let isHolding = false;
+		let flipped = false;
+		const flipCard = () => {
+			if (flipped) return;
+			flipped = true;
+			card.classList.add('flipped');
+			setTimeout(() => {
+				card.style.visibility = 'hidden';
+				flippedCount++;
+				if (flippedCount === players.length) {
+					cardSection.style.display = 'none';
+					startVoting();
+				}
+			}, 900);
+		};
+		// Mouse events
+		card.addEventListener('mousedown', function(e) {
+			if (flipped) return;
+			isHolding = true;
+		});
+		card.addEventListener('mouseup', function(e) {
+			if (flipped || !isHolding) return;
+			isHolding = false;
+			flipCard();
+		});
+		card.addEventListener('mouseleave', function(e) {
+			if (flipped) return;
+			isHolding = false;
+		});
+		// Touch events
+		card.addEventListener('touchstart', function(e) {
+			if (flipped) return;
+			isHolding = true;
+		});
+		card.addEventListener('touchend', function(e) {
+			if (flipped || !isHolding) return;
+			isHolding = false;
+			flipCard();
+		});
+		card.addEventListener('touchcancel', function(e) {
+			if (flipped) return;
+			isHolding = false;
+		});
+		cardsContainer.appendChild(card);
+	}
+	cardSection.style.display = '';
 };
 
-function showWordForPlayer() {
-	if (currentWordPlayer < players.length) {
-		wordInstructions.innerHTML = `<strong>${players[currentWordPlayer]}</strong>, click to see your word!`;
-		nextPlayerBtn.textContent = 'Show Word';
-		nextPlayerBtn.onclick = function() {
-			let word = (currentWordPlayer === undercoverIndex) ? undercoverWord : civilianWord;
-			wordInstructions.innerHTML = `<strong>Your word: ${word}</strong><br>Pass to the next player when ready.`;
-			nextPlayerBtn.textContent = (currentWordPlayer === players.length - 1) ? 'Start Voting' : 'Next Player';
-			nextPlayerBtn.onclick = function() {
-				currentWordPlayer++;
-				showWordForPlayer();
-			};
-		};
-	} else {
-		wordSection.style.display = 'none';
-		startVoting();
-	}
-}
+// showWordForPlayer removed
 
 function startVoting() {
 	voteSection.style.display = '';
@@ -134,6 +172,7 @@ restartBtn.onclick = function() {
 	updatePlayerList();
 	setupSection.style.display = '';
 	wordSection.style.display = 'none';
+	cardSection.style.display = 'none';
 	voteSection.style.display = 'none';
 	resultSection.style.display = 'none';
 };
