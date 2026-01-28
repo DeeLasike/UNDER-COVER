@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNDERCOVER Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>UNDERCOVER</h1>
+        <div id="setup-section">
+            <h2>Enter Player Names</h2>
+            <form id="player-form">
+                <input type="text" id="player-name" placeholder="Player name" autocomplete="off" />
+                <button type="button" id="add-player">Add Player</button>
+            </form>
+            <ul id="player-list"></ul>
+            <button id="start-game" disabled>Start Game</button>
+        </div>
+        <div id="word-section" style="display:none;">
+            <h2>Word Assignment</h2>
+            <div id="word-instructions"></div>
+            <button id="next-player">Next Player</button>
+        </div>
+        <div id="vote-section" style="display:none;">
+            <h2>Vote Out the Undercover!</h2>
+            <ul id="vote-list"></ul>
+            <button id="reveal-btn">Reveal Undercover</button>
+        </div>
+        <div id="result-section" style="display:none;">
+            <h2>Result</h2>
+            <div id="result-message"></div>
+            <button id="restart-btn">Restart Game</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
