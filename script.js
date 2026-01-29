@@ -1,4 +1,7 @@
 // UNDERCOVER Game Logic
+// Import sound functions
+// Assumes sound.js is loaded before this script
+// If not, add <script src="sound.js"></script> before script.js in index.html
 const playerForm = document.getElementById('player-form');
 const playerNameInput = document.getElementById('player-name');
 const addPlayerBtn = document.getElementById('add-player');
@@ -66,6 +69,7 @@ playerNameInput.addEventListener('keydown', function(e) {
 
 // Start game logic
 startGameBtn.onclick = function() {
+	playBackgroundMusic();
 	// Assign words
 	const wordPair = words[Math.floor(Math.random() * words.length)];
 	if (Math.random() < 0.5) {
@@ -93,6 +97,7 @@ startGameBtn.onclick = function() {
 			if (flipped) return;
 			flipped = true;
 			card.classList.add('flipped');
+			playCardFlip();
 			setTimeout(() => {
 				card.style.visibility = 'hidden';
 				flippedCount++;
@@ -140,6 +145,7 @@ function startVoting() {
 	voteSection.style.display = '';
 	voteList.innerHTML = '';
 	votes = Array(players.length).fill(0);
+	playVote();
 	players.forEach((name, i) => {
 		const li = document.createElement('li');
 		li.innerHTML = `<label><input type="radio" name="vote" value="${i}"> ${name}</label>`;
@@ -160,8 +166,10 @@ revealBtn.onclick = function() {
 	resultSection.style.display = '';
 	if (votedIndex === undercoverIndex) {
 		resultMessage.innerHTML = `<span style="color:green;">Correct! <strong>${players[undercoverIndex]}</strong> was the UNDERCOVER with the word "${undercoverWord}".</span>`;
+		playResult(true);
 	} else {
 		resultMessage.innerHTML = `<span style="color:red;">Wrong! <strong>${players[undercoverIndex]}</strong> was the UNDERCOVER with the word "${undercoverWord}".<br>You voted out <strong>${players[votedIndex]}</strong>.</span>`;
+		playResult(false);
 	}
 };
 
@@ -184,4 +192,5 @@ restartBtn.onclick = function() {
 	cardsContainer.innerHTML = '';
 	voteList.innerHTML = '';
 	resultMessage.innerHTML = '';
+	stopBackgroundMusic();
 };
