@@ -69,8 +69,11 @@ playerNameInput.addEventListener('keydown', function(e) {
 
 // Start game logic
 startGameBtn.onclick = function() {
-	playBackgroundMusic();
 	// Assign words
+	// Play background music as soon as the site loads
+	window.addEventListener('DOMContentLoaded', function() {
+		playBackgroundMusic();
+	});
 	const wordPair = words[Math.floor(Math.random() * words.length)];
 	if (Math.random() < 0.5) {
 		civilianWord = wordPair[0];
