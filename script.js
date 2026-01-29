@@ -146,3 +146,42 @@ function startVoting() {
 		voteList.appendChild(li);
 	});
 }
+
+// Reveal undercover logic
+
+revealBtn.onclick = function() {
+	const selected = document.querySelector('input[name="vote"]:checked');
+	if (!selected) {
+		alert('Please select a player to vote out!');
+		return;
+	}
+	const votedIndex = parseInt(selected.value);
+	voteSection.style.display = 'none';
+	resultSection.style.display = '';
+	if (votedIndex === undercoverIndex) {
+		resultMessage.innerHTML = `<span style="color:green;">Correct! <strong>${players[undercoverIndex]}</strong> was the UNDERCOVER with the word "${undercoverWord}".</span>`;
+	} else {
+		resultMessage.innerHTML = `<span style="color:red;">Wrong! <strong>${players[undercoverIndex]}</strong> was the UNDERCOVER with the word "${undercoverWord}".<br>You voted out <strong>${players[votedIndex]}</strong>.</span>`;
+	}
+};
+
+// Restart game logic
+restartBtn.onclick = function() {
+	// Reset all game state
+	players = [];
+	undercoverIndex = null;
+	civilianWord = '';
+	undercoverWord = '';
+	currentWordPlayer = 0;
+	cardWords = [];
+	votes = [];
+	playerNameInput.value = '';
+	updatePlayerList();
+	setupSection.style.display = '';
+	cardSection.style.display = 'none';
+	voteSection.style.display = 'none';
+	resultSection.style.display = 'none';
+	cardsContainer.innerHTML = '';
+	voteList.innerHTML = '';
+	resultMessage.innerHTML = '';
+};
