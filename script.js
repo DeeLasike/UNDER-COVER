@@ -35,7 +35,7 @@ let words = [
 let currentWordPlayer = 0;
 let cardWords = [];
 let votes = [];
-
+// Add missing updatePlayerList function
 function updatePlayerList() {
 	playerList.innerHTML = '';
 	players.forEach((name, i) => {
@@ -46,6 +46,7 @@ function updatePlayerList() {
 	startGameBtn.disabled = players.length < 3;
 }
 
+// Add player on button click
 addPlayerBtn.onclick = function() {
 	const name = playerNameInput.value.trim();
 	if (name && !players.includes(name)) {
@@ -55,6 +56,7 @@ addPlayerBtn.onclick = function() {
 	}
 };
 
+// Add player on Enter key
 playerNameInput.addEventListener('keydown', function(e) {
 	if (e.key === 'Enter') {
 		e.preventDefault();
@@ -62,6 +64,7 @@ playerNameInput.addEventListener('keydown', function(e) {
 	}
 });
 
+// Start game logic
 startGameBtn.onclick = function() {
 	// Assign words
 	const wordPair = words[Math.floor(Math.random() * words.length)];
@@ -132,8 +135,7 @@ startGameBtn.onclick = function() {
 	cardSection.style.display = '';
 };
 
-// showWordForPlayer removed
-
+// Voting logic
 function startVoting() {
 	voteSection.style.display = '';
 	voteList.innerHTML = '';
@@ -144,38 +146,3 @@ function startVoting() {
 		voteList.appendChild(li);
 	});
 }
-
-revealBtn.onclick = function() {
-	const selected = document.querySelector('input[name="vote"]:checked');
-	if (!selected) {
-		alert('Please select a player to vote out!');
-		return;
-	}
-	const votedIndex = parseInt(selected.value);
-	voteSection.style.display = 'none';
-	resultSection.style.display = '';
-	if (votedIndex === undercoverIndex) {
-		resultMessage.innerHTML = `<span style="color:green;">Correct! <strong>${players[undercoverIndex]}</strong> was the UNDERCOVER with the word "${undercoverWord}".</span>`;
-	} else {
-		resultMessage.innerHTML = `<span style="color:red;">Wrong! <strong>${players[undercoverIndex]}</strong> was the UNDERCOVER with the word "${undercoverWord}".<br>You voted out <strong>${players[votedIndex]}</strong>.</span>`;
-	}
-};
-
-restartBtn.onclick = function() {
-	// Reset everything
-	players = [];
-	undercoverIndex = null;
-	civilianWord = '';
-	undercoverWord = '';
-	currentWordPlayer = 0;
-	votes = [];
-	updatePlayerList();
-	setupSection.style.display = '';
-	wordSection.style.display = 'none';
-	cardSection.style.display = 'none';
-	voteSection.style.display = 'none';
-	resultSection.style.display = 'none';
-};
-
-// Initial state
-updatePlayerList();
